@@ -1,4 +1,5 @@
-import { Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, VStack } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, IconButton, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useState } from "react";
 import { ExpenseCard } from "../components/expense-card";
@@ -29,6 +30,9 @@ export default function Expenses({ expenses }: { expenses: ExpenseHeader[] }) {
                 align='flex-start'
             >
                 <Heading as="h1">Expenses</Heading>
+                <HStack>
+                    <Button leftIcon={<AddIcon />} colorScheme='teal'>New</Button>
+                </HStack>
                 <Grid gap='10px' templateColumns='repeat(3, 1fr)' w='full'>
                     {rows.map(e => {
                         return (
