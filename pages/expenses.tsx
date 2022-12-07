@@ -1,8 +1,9 @@
-import { AddIcon } from "@chakra-ui/icons";
-import { Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, IconButton, VStack } from "@chakra-ui/react";
+import { AddIcon, SpinnerIcon } from "@chakra-ui/icons";
+import { Box, Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, IconButton, ScaleFade, SimpleGrid, SlideFade, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useState } from "react";
 import { ExpenseCard } from "../components/expense-card";
+import ExpenseHeaderForm from "../components/expense-header-form";
 import { ExpenseHeader, GetExpenseHeaders } from "../models/ExpenseHeader";
 
 export async function getServerSideProps() {
@@ -16,9 +17,13 @@ export async function getServerSideProps() {
 
 export default function Expenses({ expenses }: { expenses: ExpenseHeader[] }) {
     const [rows, setRows] = useState<ExpenseHeader[]>(expenses);
+    const [isLoading, setIsLoading] = useState(false);
     async function getExpenseHeader() {
+        setIsLoading(true);
+        setRows([]);
         const response = await fetch('/api/expenses');
         setRows(await response.json());
+        setIsLoading(false);
     }
 
     return (
@@ -31,17 +36,35 @@ export default function Expenses({ expenses }: { expenses: ExpenseHeader[] }) {
             >
                 <Heading as="h1">Expenses</Heading>
                 <HStack>
-                    <Button leftIcon={<AddIcon />} colorScheme='teal'>New</Button>
+                    <ExpenseHeaderForm
+                        onAdd={getExpenseHeader}
+                        button={<Button leftIcon={<AddIcon />} colorScheme='teal'>New</Button>} />
+                    <IconButton
+                        aria-label='Reload'
+                        colorScheme='teal'
+                        icon={<SpinnerIcon />}
+                        onClick={getExpenseHeader}
+                        isLoading={isLoading}
+                    />
                 </HStack>
-                <Grid gap='10px' templateColumns='repeat(3, 1fr)' w='full'>
-                    {rows.map(e => {
+                <Box style={{ columnCount: 3 }} columnGap='10px' w='full'>
+                    {rows.map((e, i, arr) => {
                         return (
-                            <GridItem key={e.Id}>
-                                <ExpenseCard expense={e} />
-                            </GridItem>
+                            <Box
+                                key={e.Id}
+                                display='inline-block'
+                                my='5px'
+                                w='full'
+                            >
+                                <SlideFade offsetY='-15px' in={true} delay={i * 0.05}>
+                                    <ExpenseCard expense={e} onDelete={async (id) => {
+                                        await getExpenseHeader();
+                                    }} />
+                                </SlideFade>
+                            </Box>
                         );
                     })}
-                </Grid>
+                </Box>
             </VStack>
         </>
     )

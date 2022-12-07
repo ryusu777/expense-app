@@ -1,12 +1,30 @@
-import { RowDataPacket } from "mysql2";
+import { OkPacket, RowDataPacket } from "mysql2";
 import { connection } from "./DbConnection";
 
 export interface ExpenseHeader extends RowDataPacket {
     Id: number;
     Title: string;
-    ExpenseBy: string;
+    ExpenseBy: string | number;
     ExpenseAt: Date;
     ExpenseTotal: number;
+}
+
+export function SaveExpenseHeader(expense: ExpenseHeader): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        connection.query<OkPacket>(`INSERT INTO ExpenseHeader (Title, ExpenseAt, ExpenseBy) VALUES ('${expense.Title}', '${expense.ExpenseAt}', ${expense.ExpenseBy});`, (err, res) => {
+            if (err) reject(err);
+            else return resolve(true);
+        });
+    });
+}
+
+export function DeleteExpenseHeader(expenseId: number | string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        connection.query<OkPacket>(`DELETE FROM ExpenseHeader WHERE id=${expenseId};`, (err, res) => {
+            if (err) reject(err);
+            else return resolve(true);
+        });
+    });
 }
 
 export function GetExpenseHeaders(rowsPerPage?: number): Promise<ExpenseHeader[]> {
@@ -16,12 +34,12 @@ export function GetExpenseHeaders(rowsPerPage?: number): Promise<ExpenseHeader[]
                 eh.Title,
                 eh.ExpenseAt,
                 u.Name AS ExpenseBy,
-                SUM(ed.Price) AS ExpenseTotal
+                SUM(IFNULL(ed.Price, 0)) AS ExpenseTotal
             FROM ExpenseHeader eh
+            LEFT JOIN ExpenseDetail ed ON ed.ExpenseHeaderId=eh.ID
             JOIN User u ON eh.ExpenseBy=u.Id
-            JOIN ExpenseDetail ed ON ed.ExpenseHeaderId=eh.ID
-            GROUP BY ed.ExpenseHeaderId
-            ORDER BY ExpenseAt DESC LIMIT ${rowsPerPage || 10}`, (err, res) => {
+            GROUP BY eh.Id
+            ORDER BY ExpenseAt DESC LIMIT ${rowsPerPage || 12}`, (err, res) => {
             if (err) reject(err);
             else return resolve(res);
         });
