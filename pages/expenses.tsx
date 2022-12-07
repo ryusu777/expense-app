@@ -1,5 +1,5 @@
 import { AddIcon, SpinnerIcon } from "@chakra-ui/icons";
-import { Box, Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, IconButton, ScaleFade, SimpleGrid, SlideFade, VStack } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, IconButton, ScaleFade, SimpleGrid, SlideFade, useBreakpointValue, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useState } from "react";
 import { ExpenseCard } from "../components/expense-card";
@@ -16,6 +16,12 @@ export async function getServerSideProps() {
 }
 
 export default function Expenses({ expenses }: { expenses: ExpenseHeader[] }) {
+    const columnCount = useBreakpointValue({
+        lg: 3,
+        md: 2,
+        sm: 1,
+        xs: 1
+    });
     const [rows, setRows] = useState<ExpenseHeader[]>(expenses);
     const [isLoading, setIsLoading] = useState(false);
     async function getExpenseHeader() {
@@ -47,7 +53,7 @@ export default function Expenses({ expenses }: { expenses: ExpenseHeader[] }) {
                         isLoading={isLoading}
                     />
                 </HStack>
-                <Box style={{ columnCount: 3 }} columnGap='10px' w='full'>
+                <Box style={{ columnCount: columnCount }} columnGap='10px' w='full'>
                     {rows.map((e, i, arr) => {
                         return (
                             <Box

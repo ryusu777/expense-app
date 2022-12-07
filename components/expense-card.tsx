@@ -126,10 +126,11 @@ export function ExpenseCard({ expense, onDelete }: { expense: ExpenseHeader, onD
                 <Collapse animateOpacity={false} in={!!showDetail}>
                     <CardBody pt='0'>
                         <VStack>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    handleSubmitDetail();
-                                }}>
+                            <form style={{ width: '100%' }} onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmitDetail();
+                            }}>
+                                <HStack justifyContent='space-between' w='full'>
                                     <HStack>
                                         <Input
                                             placeholder='Name'
@@ -146,17 +147,18 @@ export function ExpenseCard({ expense, onDelete }: { expense: ExpenseHeader, onD
                                             value={price}
                                             onChange={(e) => setPrice(e.target.value)}
                                         />
-                                        <IconButton
-                                            aria-label='Save'
-                                            icon={<SmallAddIcon />}
-                                            size='sm'
-                                            variant='solid'
-                                            colorScheme='teal'
-                                            isLoading={isSubmitLoading}
-                                            type='submit'
-                                        />
                                     </HStack>
-                                </form>
+                                    <IconButton
+                                        aria-label='Save'
+                                        icon={<SmallAddIcon />}
+                                        size='sm'
+                                        variant='solid'
+                                        colorScheme='teal'
+                                        isLoading={isSubmitLoading}
+                                        type='submit'
+                                    />
+                                </HStack>
+                            </form>
                             {details.map(e => {
                                 return (
                                     <HStack justifyContent='space-between' key={e.Id} w='full'>
