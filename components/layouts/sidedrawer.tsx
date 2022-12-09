@@ -11,7 +11,6 @@ export function SideDrawer({ button }: { button: ReactElement }) {
             {TheButton}
             <Drawer
                 isOpen={isOpen}
-                placement='left'
                 onClose={onClose}
             >
                 <DrawerOverlay />
@@ -20,7 +19,9 @@ export function SideDrawer({ button }: { button: ReactElement }) {
                     <DrawerHeader>Menu</DrawerHeader>
 
                     <DrawerBody>
-                        <Sidebar />
+                        <Sidebar
+                            onNavigate={onClose}
+                        />
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>

@@ -2,7 +2,7 @@ import { Box, Button, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate } : { onNavigate?: () => any }) {
     const router = useRouter();
     const menuList = [
         {
@@ -18,14 +18,16 @@ export default function Sidebar() {
     ];
     return (
         <VStack 
-            style={{ height: '100%' }}
+            h='full'
             alignItems='flex-start'
+            justifyContent='flex-start'
         >
             {menuList.map(e => {
                 return (
                     <Link
                         key={e.navigation}
                         href={e.navigation}
+                        onClick={onNavigate}
                         style={{ width: '100%' }}
                     >
                         <Button

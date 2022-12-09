@@ -123,7 +123,7 @@ export function ExpenseCard({ expense, onDelete }: { expense: ExpenseHeader, onD
                         loadingText='Getting data'
                     >Toggle details</Button>
                 </CardHeader>
-                <Collapse animateOpacity={false} in={!!showDetail}>
+                <Collapse animateOpacity={false} in={!!showDetail && !!details.length}>
                     <CardBody pt='0'>
                         <VStack>
                             <form style={{ width: '100%' }} onSubmit={(e) => {

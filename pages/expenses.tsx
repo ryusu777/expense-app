@@ -17,8 +17,9 @@ export async function getServerSideProps() {
 
 export default function Expenses({ expenses }: { expenses: ExpenseHeader[] }) {
     const columnCount = useBreakpointValue({
-        lg: 3,
-        md: 2,
+        xl: 3,
+        lg: 2,
+        md: 1,
         sm: 1,
         xs: 1
     });
